@@ -1,0 +1,10 @@
+<messaging:emailTemplate subject="Unit test class template" recipientType="User" relatedToType="ApexClass">
+<messaging:plainTextEmailBody >
+
+@isTest 
+private class {!relatedTo.Name}Test { 
+    <c:UnitTestClassComponent apexClassInstance="{!relatedTo}" /> 
+} 
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

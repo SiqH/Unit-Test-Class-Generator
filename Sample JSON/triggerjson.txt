@@ -1,0 +1,32 @@
+String jsonData = 
+		'{"type" : "trigger",'+
+		'"primaryobject" : "account",'+
+		'"testcases" : ['+
+					'{	"relatedobject" : ["opportunity"],'+
+						'"relatedObjectInput" : ["AccountId"],'+	
+						'"action" : "delete",'+        
+						'"testmethod" : "TestDeleteAccountWithOneOpportunity",'+
+						'"noofprimobjs" : "1",'+	
+						'"noofreltdobjs" : "1",'+
+						'"assertfor" : "Failure"'+
+					'},'+
+					'{	"relatedobject" : ["opportunity"],'+
+						'"relatedObjectInput" : ["AccountId"],'+	
+						'"action" : "delete",'+        
+						'"testmethod" : "TestDeleteBulkAccountWithOneOpportunity",'+
+						'"noofprimobjs" : "5",'+	
+						'"noofreltdobjs" : "1",'+
+						'"assertfor" : "Failure"'+
+					'},'+
+					'{	"relatedobject" : ["opportunity"],'+
+						'"relatedObjectInput" : ["AccountId"],'+	
+						'"action" : "delete",'+ 
+						'"testmethod" : "TestDeleteAccountWithNoOpportunities",'+
+						'"noofprimobjs" : "1",'+
+						'"noofreltdobjs" : "0", '+
+						'"assertfor" : "Success"'+
+					'}'+
+				']'+
+	'}';
+
+ApexTestClassGenUtil.generateApexTestClass('AccountDeletion',  jsonData, 'trigger');

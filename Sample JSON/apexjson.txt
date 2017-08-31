@@ -1,0 +1,33 @@
+String jsondata = 
+'{"type":"ApexClass",' +
+'"FahrenheitToCelsius": [' +
+     '{' +
+       '"testmethodname":"testWarmTemp",' +
+       '"input":70,' + 
+       '"Output":21.11' +      
+     '},' +
+     '{' +
+        '"testmethodname":"testFreezingPoint",' +
+        '"input":32,' +
+        '"output":0' +       
+     '},' +
+     
+     '{' +
+        '"testmethodname":"testNegativeTemp",' +
+        '"input":-10,' +
+        '"output":-23.33' +
+     '},' +
+'{' +
+        '"testmethodname":"testBoilingTemp",' +
+        '"input":213,' +
+        '"output":100.56' +
+     '}' +
+  ']' +   
+'}';
+
+ApexTestClassGenUtil.generateApexTestClass('TemperatureConverter', jsondata, 'ApexClass');
+
+
+			
+			
+

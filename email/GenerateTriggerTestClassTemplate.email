@@ -1,0 +1,10 @@
+<messaging:emailTemplate subject="Generic test class template" recipientType="User" relatedToType="ApexTrigger">
+<messaging:plainTextEmailBody >
+
+@isTest 
+private class {!relatedTo.Name}Test { 
+    <c:UnitTestClassComponent apexTriggerClassInstance="{!relatedTo}" /> 
+} 
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

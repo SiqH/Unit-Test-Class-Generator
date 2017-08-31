@@ -1,0 +1,120 @@
+<apex:component controller="UnitTestDataFactory" >
+
+    <apex:attribute name="apexClassInstance" description="Attribute on the component to hold apex class instance"
+                  type="ApexClass" assignTo="{!apexClassRecord}"/>
+    <apex:attribute name="apexTriggerClassInstance" description="Attribute on the component to hold apex trigger instance"
+                  type="ApexTrigger" assignTo="{!apexTriggerClassRecord}"/>
+
+    <apex:repeat value="{!classDetailsWrapperInstance}" var="key" >
+        <apex:repeat value="{!key.classDefinitionWrapperList}" var="value">
+        <!-- TODO: The structure of the arguments need to be passed within the AssertEquals should be dictated by Controller} -->
+
+            @isTest
+            static void {!value.testMethodName}() {
+                <apex:outputText value="" rendered="{!IF(key.isStaticMethod == true, true, false)}">
+                System.assertEquals({!value.output}, {!apexClassRecord.Name}.{!key.methodName}({!value.input}));
+                </apex:outputText>
+                <apex:outputText value="" rendered="{!IF(key.isStaticMethod != true, true, false)}">
+                System.assertEquals({!value.output}, new {!apexClassRecord.Name}().{!key.methodName}({!value.input}));
+                </apex:outputText>
+            }
+
+        </apex:repeat>
+
+        <apex:outputText value="" rendered="{!IF(key.triggerWrapperList != null, true, false)}">
+        <apex:repeat value="{!key.triggerWrapperList}" var="value">
+        <!-- TODO: The structure of the arguments need to be passed within the AssertEquals should be dictated by Controller} -->
+
+            @isTest
+            static void {!value.testMethodName}() {
+                // Test data setup
+                List&lt;{!key.primaryObject}&gt; {!key.primaryObject}List =
+                    create{!key.primaryObject}TestData({!value.numberOfPrimaryRecord});
+
+                List&lt;{!value.relatedObject[0]}&gt; {!value.relatedObject[0]}List = 
+                    create{!value.relatedObject[0]}TestData({!key.primaryObject}List, {!value.numberOfRelatedRecord});
+
+                // Perform test
+                Test.startTest();
+                List&lt;Database.{!value.action}Result&gt; result = Database.{!value.action}({!key.primaryObject}List, false);
+                Test.stopTest();
+
+                <apex:outputText rendered="{!IF(value.assertfor == 'Failure', true, false)}">
+                for (Database.{!value.action}Result r : result) {
+                    // Verify that the deletion should have been stopped by the trigger,
+                    // so check that we got back an error.
+                    System.assert(!r.isSuccess());
+                    System.assert(r.getErrors().size() > 0);
+                    System.assertEquals('Cannot delete account with related opportunities.', r.getErrors()[0].getMessage());
+                }
+                </apex:outputText>
+
+                <apex:outputText rendered="{!IF(value.assertfor == 'Success', true, false)}">
+                for (Database.{!value.action}Result r : result) {
+                    // Verify that the deletion was successful
+                    System.assert(r.isSuccess());
+                }
+                </apex:outputText>
+            }
+        </apex:repeat>
+
+        <!-- create test data for primary object -->
+        <apex:repeat value="{!Testdata}" var="data">
+            <apex:outputText escape="false" rendered="{!(data == key.primaryObject)}">
+            private static List&lt;{!data}&gt; create{!data}TestData(Integer numberOfrecords) {
+                List&lt;{!data}&gt; {!data}List = new List&lt;{!data}&gt;();
+
+                for (Integer i = 0; i &lt; numberOfrecords ; i++) {
+                    {!data}List.add(
+                        new {!data} (
+                        <apex:variable var="count" value="{!0}" />
+                        <apex:repeat value="{!Testdata[data]}" var="dataString">
+                            <apex:variable var="count" value="{!count + 1}" />
+                            <apex:variable value="{!Testdata[data]}"  var="dataStringList" />
+                            <apex:outputText escape="false" rendered="{!(count != dataStringList.size)}">
+                            {!dataString} ,
+                            </apex:outputText>
+                            <apex:outputText escape="false" rendered="{!(count == dataStringList.size)}">
+                            {!dataString}
+                            </apex:outputText>
+                        </apex:repeat>
+                        )
+                    );
+                }
+                insert {!data}List;
+                return {!data}List;
+            }
+            </apex:outputText>
+
+            <apex:outputText escape="false" rendered="{!(data != key.primaryObject)}">
+            private static List&lt;{!data}&gt; create{!data}TestData(List&lt;{!key.primaryObject}&gt; {!key.primaryObject}List , Integer numberOfrecords) {
+                List&lt;{!data}&gt; {!data}List = new List&lt;{!data}&gt;();
+
+                for (Integer j = 0; j &lt; {!key.primaryObject}List.size(); j++) {
+                    {!key.primaryObject} {!key.primaryObject}Obj = {!key.primaryObject}List[j];
+                    for (Integer k = 0; k &lt; numberOfrecords; k++) {
+                        {!data}List.add(
+                            new {!data} (
+                            <apex:variable var="count" value="{!0}" />
+                            <apex:repeat value="{!Testdata[data]}" var="dataString">
+                                <apex:variable var="count" value="{!count + 1}" />
+                                <apex:variable value="{!Testdata[data]}"  var="dataStringList" />
+                                <apex:outputText escape="false" rendered="{!(count != dataStringList.size)}">
+                                {!dataString} ,
+                                </apex:outputText>
+                                <apex:outputText escape="false" rendered="{!(count == dataStringList.size)}">
+                                {!dataString}
+                                </apex:outputText>
+                            </apex:repeat>
+                            )
+                        );
+                    }
+                }
+                insert {!data}List;
+                return {!data}List;
+            }
+            </apex:outputText>
+            </apex:repeat>
+        </apex:outputText>
+    </apex:repeat>
+</apex:component>
