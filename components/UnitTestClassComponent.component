@@ -1,4 +1,4 @@
-<apex:component controller="UnitTestDataFactory" >
+<apex:component controller="UnitTestDataFactory" access="global">
 
     <apex:attribute name="apexClassInstance" description="Attribute on the component to hold apex class instance"
                   type="ApexClass" assignTo="{!apexClassRecord}"/>
