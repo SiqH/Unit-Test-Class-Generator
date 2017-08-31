@@ -1,7 +1,7 @@
 # Unit-Test-Class-Generator
 Generate Unit Test class for Salesforce Apex Class and Trigger
 
-## Please follow the steps given below to run the application:
+## Please follow the steps given below sequencially to run the application:
 Step-1: Install [Force.com CLI](https://developer.salesforce.com/tools/forcecli) if it is not installed already
 
 Step-2: Create/Save **ApexClassSymbolTable.cls, GenerateApexClass.cls, ApexTestClassGenUtil.cls and UnitTestDataFactory.cls** classes in order
